@@ -4,6 +4,7 @@ import connectDB from './db/connection.js';
 import User from './models/User.js';
 import authRoutes from './routes/authRoutes.js';
 import dotenv from 'dotenv';
+import categoryRoutes from './routes/categoryRoutes.js';  
 
 import bcrypt from 'bcrypt'
 
@@ -14,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json())
 app.use('/api/auth', authRoutes); //router for handling login and registration
-
+app.use('/api/category', categoryRoutes);
 
 const PORT=process.env.PORT || 5000; 
 
