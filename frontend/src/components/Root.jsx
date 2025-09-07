@@ -15,11 +15,11 @@ const Root = () =>
         {
             if(user.role === 'admin')
             {
-                navigate('/admin/dashboard');
+                navigate('/admin-dashboard');
             }
             else if(user.role === 'customer')
             {
-                navigate('/customer/dashboard');
+                navigate('/customer-dashboard');
             }
             else{
                 navigate('/login');
