@@ -7,6 +7,7 @@ import ProtectedRoutes from './utils/ProtectedRoutes'
 import Dashboard from './pages/Dashboard'
 import Categories from './components/Categories'
 import Suppliers from './components/Suppliers'
+import Product from './components/Product'
 
 function App() {
   
@@ -32,7 +33,7 @@ function App() {
 
          <Route 
           path="products"
-          element={<h1>Products</h1>} 
+          element={<Product />} 
         />
 
          <Route 
