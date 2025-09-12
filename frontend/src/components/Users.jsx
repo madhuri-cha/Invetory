@@ -1,16 +1,21 @@
 import axios from "axios";
 import { useEffect, useState} from "react";
 
-const Categories = () => {
+const Users = () => {
 
-    const [categoryName, setCategoryName] = useState("");
-    const [categoryDescription, setCategoryDescription] = useState("");
-    const [categories, setCategories] = useState([]);
+    const [formData, setFormData] = useState(
+        {
+            name: "",
+            email: "",
+            password: "",
+            address:"", 
+            role:"",
+    })
+
+    const [users, setUsers] = useState([]);
     const [loading, setLoading] =useState(false);
-    const [editCategory, setEditCategory] = useState(null);
 
-
-    const fetchCategories = async () => {
+    const fetchUsers = async () => {
        setLoading(true);
        try{
 
@@ -19,8 +24,8 @@ const Categories = () => {
             Authorization: `Bearer ${localStorage.getItem('pos-token')}`
           }
         });
-        console.log("Fetched categories:", response.data.categories);
-        setCategories(response.data.categories);
+        
+        setUsers(response.data.users);
         setLoading(false);
        }
        catch (error)
@@ -30,55 +35,13 @@ const Categories = () => {
      
       }
 
-
     useEffect(() =>{
-      fetchCategories();
+      fetchUsers();
     }, []);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      if(editCategory) 
-        {
-       const response = await axios.put(
-        `http://localhost:5000/api/category/${editCategory}`, 
-        {categoryName, categoryDescription},
-        {
-            headers: {
-               Authorization: `Bearer ${localStorage.getItem('pos-token')}`
-            },
-        }
-      );
-      if(response.data.success) {
-            setEditCategory(null);
-            alert('Category Updated successfully');
-            fetchCategories(); // Refresh the category list
-
-     } else {
-        // Handle error (e.g., show an error message)
-        alert('Failed to update category');
-      }
-      }
-      else{
-        const response = await axios.post(
-         "http://localhost:5000/api/category/add", 
-         {categoryName, categoryDescription},
-         {
-             headers: {
-                Authorization: `Bearer ${localStorage.getItem('pos-token')}`
-             },
-           }
-        );
-      if(response.data.success) {
-        //     // Handle success (e.g., show a success message, reset form, etc.)
-            setCategoryName("");
-            setCategoryDescription("");
-            alert('Category added successfully');
-            fetchCategories(); // Refresh the category list
-
-       } else {
-        // Handle error (e.g., show an error message)
-        alert('Failed to add category');
-      }
+      
 
       }
     
@@ -238,4 +201,4 @@ const handleDeleteEdit = async (categoryId) =>
   );
 };
 
-export default Categories;
+export default Users;

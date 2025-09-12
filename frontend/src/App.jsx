@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 import Categories from './components/Categories'
 import Suppliers from './components/Suppliers'
 import Product from './components/Product'
+import Logout from './components/Logout'
 
 function App() {
   
@@ -54,6 +55,10 @@ function App() {
          <Route 
           path="profile"
           element={<h1>Profile</h1>} 
+        />
+         <Route 
+          path="logout"
+          element={<Logout />} 
         />
 
       </Route> 
