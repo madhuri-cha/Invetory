@@ -196,9 +196,11 @@ import axios from 'axios';
 
 const Product = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [editProduct, seteditProduct]= useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -219,6 +221,7 @@ const Product = () => {
       {
       setSuppliers(response.data.suppliers);
       setCategories(response.data.categories);
+      setFilteredProducts(response.data.products)
       setProducts(response.data.products);
       }
       else {
@@ -242,10 +245,56 @@ const Product = () => {
     }));
   };
 
+const closeModel = () => 
+  {
+    setOpenModal(false);
+    seteditProduct(null);
+    setFormData({
+      name: "",
+      description: "",
+      price: "",
+      stock: "",
+      categoryId: ""
+    })
+  }   
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
+    if(editProduct)
+    {
+      try {
+      const response = await axios.put(`http://localhost:5000/api/product/${editProduct}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('pos-token')}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        alert('Product Updated successfully');
+        fetchProducts();
+        setOpenModal(false);
+        closeModel();
+        setFormData({
+          name: '',
+          description: '',
+          price: '',
+          stock: '',
+          categoryId: '',
+          supplierId: '',
+        });
+      } else {
+        alert('Failed Update Product. Please try again');
+      }
+    } catch (error) {
+      alert('Error Upadte Product. Please try again.');
+    }
+    }
+    else
+    {
+      try {
       const response = await axios.post('http://localhost:5000/api/product/add',
         formData,
         {
@@ -255,6 +304,7 @@ const Product = () => {
         }
       );
       if (response.data.success) {
+        fetchProducts();
         alert('Product added successfully');
         setOpenModal(false);
         setFormData({
@@ -271,13 +321,35 @@ const Product = () => {
     } catch (error) {
       alert('Error adding Product. Please try again.');
     }
+    }
   };
 
   const handleAddProduct = () => {
-    setOpenModal(true); // ✅ fixed
+    setOpenModal(true); 
   };
 
-  const handleSearch = () => {};
+  const handleSearch = (e) => {
+    setFilteredProducts(
+      products.filter((product) =>
+      product.name.toLowerCase().includes(e.target.value.toLowerCase()))
+    )
+  };
+
+  const handleEdit = (product) => {
+    setOpenModal(true);
+    seteditProduct(product._id);
+    setFormData({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      categoryId: product.categoryId._id,
+      supplierId: product.supplierId._id
+
+    })
+  };
+
+  const handleDelete = () => {};
 
   return (
     <div className="p-6">
@@ -303,22 +375,30 @@ const Product = () => {
           <table className="w-full border-collapse border border-gray-300 shadow-sm rounded-md overflow-hidden">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
+                <th name="name" value={formData.name} className="border border-gray-300 px-4 py-2 text-left">Name</th>
                 <th className="border border-gray-300 px-4 py-2 text-left">Category Name</th>
                 <th className="border border-gray-300 px-4 py-2 text-left">Supplier Name</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Price</th>
+                <th name="price" value={formData.price} className="border border-gray-300 px-4 py-2 text-left">Price</th>
                 <th className="border border-gray-300 px-4 py-2 text-left">Stock</th>
                 <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr key={product._id} className="hover:bg-gray-50">
                   <td className="border border-gray-300 px-4 py-2">{product.name}</td>
                   <td className="border border-gray-300 px-4 py-2">{product.categoryId.categoryName}</td>
                   <td className="border border-gray-300 px-4 py-2">{product.supplierId.name}</td>
                   <td className="border border-gray-300 px-4 py-2">{product.price}</td>
-                  <td className="border border-gray-300 px-4 py-2">{product.stock}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                  {product.stock === 0 ? (
+                    <span className='bg-red-100 text-red-500 px-2 py-1 rounded-2xl'>{product.stock}</span>
+                  ) : product.stock < 5 ? (
+                    <span className='bg-yellow-100 text-yellow-500 px-2 py-1 rounded-2xl'>{product.stock}</span>
+                  ) : (
+                    <span className='bg-green-100 text-green-500 px-2 py-1 rounded-2xl'>{product.stock}</span>
+                  )}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2 text-center space-x-2">
                     <button
                       onClick={() => handleEdit(product)}
@@ -336,9 +416,7 @@ const Product = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
-
-          {filteredSuppliers.length === 0 && <h1 className="text-gray-500">No suppliers found</h1>}
+          </table>          
         </div>
 
 
@@ -429,13 +507,13 @@ const Product = () => {
                   type="submit"
                   className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
                 >
-                  Add Product
+                 {editProduct ? "Save Changes" :  "Add Product" }
                 </button>
 
                 <button
                   type="button"
                   className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
-                  onClick={() => setOpenModal(false)}
+                  onClick={closeModel}
                 >
                   Cancel
                 </button>

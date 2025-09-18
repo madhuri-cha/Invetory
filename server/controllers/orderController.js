@@ -28,16 +28,44 @@ const addOrder = async (req, res) =>
     customer: userId,
     product: productId,
     quantity,
-    totalPrice: total
+    totalPrice: total  || product.price * quantity,
+ 
   })
 
   await orderObj.save();
   return res.status(200).json({success: true, message: "Order added successfully"})
  }
- catch (error)
- {
-     return res.status(402).json({success: false, message: "Order not added."})
- } 
+ catch (error) {
+  console.error("Error adding order:", error.message);
+  return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
 }
 
-export {addOrder}
+}
+
+
+const getOrders = async (req, res) =>
+{
+ try
+ {
+ const userId = req.user._id;
+ const orders = await OrderModel.find({customer: userId}).populate(
+  {
+  path:'product', 
+  populate : 
+ {
+  path: 'categoryId',
+  select: 'categoryName'
+ },
+  select: 'name price categoryId'
+  }).populate('customer', 'name email')
+ return res.status(200).json({success: true, orders})
+ }
+ catch (error)
+ {
+  return res.status(500).json({success: false, error:"server serror in fetching orders"})
+ }
+
+}
+
+
+export {addOrder, getOrders}

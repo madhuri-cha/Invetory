@@ -1,4 +1,8 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router'
+import {NavLink} from 'react-router'
+
 import {
   FaHome,
   FaTable,
@@ -9,7 +13,7 @@ import {
   FaCog,
   FaSignOutAlt
 } from 'react-icons/fa'
-import { NavLink } from 'react-router'
+
 
 const Sidebar = () => {
   const menuItems = [
@@ -63,9 +67,50 @@ const Sidebar = () => {
     }
   ]
 
+    const customerItems = [
+    {
+      name: 'Products',
+      path: '/customer-dashboard',
+      icon: <FaBox />,
+      isParent: true,
+    },
+    { name: 'Orders',
+      path: '/customer-dashboard/orders',
+      icon: <FaShoppingCart />,
+      isParent: false,
+    },
+    {
+      name: 'Profile',
+      path: '/customer-dashboard/profile',
+      icon: <FaCog />,
+      isParent: false,
+    },
+    {
+      name: 'Logout',
+      path: '/customer-dashboard/logout',
+      icon: <FaSignOutAlt />,
+      isParent: false,
+    }
+  ]
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [menuLinks, setMenuLinks] = useState(customerItems);
+  
+  useEffect(() => { 
+
+      if(user && user.role === 'admin'){
+         setMenuLinks(menuItems);
+       
+      }
+      else{
+        setMenuLinks(customerItems);
+      }
+  }, []);
+
   return (
     <div className="h-screen w-64 bg-gray-900 text-gray-100 flex flex-col shadow-xl">
-      {/* Logo / Title */}
+  
       <div className="flex items-center justify-center py-6 border-b border-gray-700">
         <span className="hidden md:block text-2xl font-bold tracking-wide">
           Inventory MS
@@ -73,10 +118,10 @@ const Sidebar = () => {
         <span className="md:hidden text-2xl font-bold">IMS</span>
       </div>
 
-      {/* Menu */}
       <div className="flex-1 overflow-y-auto mt-4">
         <ul className="space-y-2 px-4">
-          {menuItems.map((item) => (
+          {
+          menuLinks.map((item) => (
             <li key={item.name}>
               <NavLink
                 to={item.path}
@@ -96,17 +141,6 @@ const Sidebar = () => {
             </li>
           ))}
         </ul>
-      </div>
-
-      {/* Footer / Logout */}
-      <div className="mt-auto border-t border-gray-700">
-        <NavLink
-          to="/admin-dashboard/logout"
-          className="flex items-center gap-3 px-6 py-3 text-red-400 hover:text-white hover:bg-red-600 transition-all duration-200"
-        >
-          <FaSignOutAlt className="text-lg" />
-          <span className="font-medium">Logout</span>
-        </NavLink>
       </div>
     </div>
   )

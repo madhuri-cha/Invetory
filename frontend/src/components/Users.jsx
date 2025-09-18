@@ -13,7 +13,9 @@ const Users = () => {
     })
 
     const [users, setUsers] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [loading, setLoading] =useState(false);
+
 
     const fetchUsers = async () => {
        setLoading(true);
@@ -26,19 +28,30 @@ const Users = () => {
         });
         
         setUsers(response.data.users);
+        setFilteredUsers(response.data.users);
         setLoading(false);
        }
        catch (error)
        {
         console.error("Error fetching categories:", error);
        }
-     
-      
-
-    useEffect(() =>{
-      //fetchUsers();
-    }, []);
+       finally
+       {
+        setLoading(false);
+       }
 }
+   useEffect(() =>{
+      fetchUsers();
+    }, []);
+
+const handleSearch= (e) =>
+  {
+     setFilteredUsers(
+      users.filter((user) =>
+      user.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    )
+  } 
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -63,13 +76,15 @@ const Users = () => {
             role:"",
 
             });
-            //fetchCategories(); 
+            fetchUsers(); 
      } else {
         // Handle error (e.g., show an error message)
         alert('Failed to add users');
       }
 
       }
+ 
+     
   
 const handleChange = (e) =>
   {
@@ -80,20 +95,20 @@ const handleChange = (e) =>
     }))
   }      
 
-const handleDeleteEdit = async (categoryId) =>
+const handleDeleteEdit = async (id) =>
 {
   const confirmDelete = window.confirm("Are you sure you want to delete this User?");
   if(confirmDelete)
   {
     try{
-      const response = await axios.delete(`http://localhost:5000/api/user/${id}`, {
+      const response = await axios.delete(`http://localhost:5000/api/users/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('pos-token')}`
         }
       });
       if(response.data.success) {
         alert('User deleted successfully');
-        fetchCategories(); // Refresh the category list
+        fetchUsers(); 
       } else {
         alert('Failed to delete User');
       }
@@ -101,6 +116,7 @@ const handleDeleteEdit = async (categoryId) =>
     catch(error)  
     {
       console.error("Error deleting User:", error);
+      
     }
   }
 
@@ -127,6 +143,8 @@ const handleDeleteEdit = async (categoryId) =>
                 <input
                   type="text"
                   placeholder="Enter Name"
+                  name="name"
+                   value={formData.name}
                   className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   onChange={handleChange}
                 />
@@ -134,6 +152,8 @@ const handleDeleteEdit = async (categoryId) =>
               <div>
                 <input
                   type="email"
+                  name="email"
+                   value={formData.email}
                   placeholder="Enter email"
                   className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   onChange={handleChange}
@@ -142,6 +162,8 @@ const handleDeleteEdit = async (categoryId) =>
                <div>
                 <input
                   type="password"
+                  name="password"
+                   value={formData.password}
                   placeholder="Enter password"
                   className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   onChange={handleChange}
@@ -150,13 +172,20 @@ const handleDeleteEdit = async (categoryId) =>
                <div>
                 <input
                   type="address"
+                  name="address"
+                   value={formData.address}
                   placeholder="Enter address"
                   className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   onChange={handleChange}
                 />
               </div>
                <div>
-                <select name="role" id=""  className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select
+                 name="role" 
+                 value={formData.role}
+                 className="border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 onChange={handleChange}
+                  >
                   <option value="">Select Role</option>
                   <option value="admin">Admin</option>
                   <option value="customer">Customer</option>
@@ -167,6 +196,7 @@ const handleDeleteEdit = async (categoryId) =>
                 <button
                 type="submit"
                 className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
+                onSubmit={handleSubmit}
               >
                Add User
               </button>
@@ -178,10 +208,13 @@ const handleDeleteEdit = async (categoryId) =>
         {/* Category List */}
        <div className="w-full lg:w-2/3">
          <div className="bg-white shadow-md rounded-lg p-6">
+
+          <input type="text" onChange={handleSearch} placeholder="Search user.." className="p-2 bg-white w-full mb-4 rounded-2xl"/>
+          
            <h2 className="text-center text-xl font-bold mb-4">Users List</h2>
            <ul className="space-y-2">
              {
-                users && users.map((user) => (
+                filteredUsers && filteredUsers.map((user) => (
                <li key={user._id} className="border-b py-2">
                  <h3 className="font-semibold">{user.name}</h3>
                  <p className="text-sm text-gray-600">{user.email}</p>
@@ -190,14 +223,13 @@ const handleDeleteEdit = async (categoryId) =>
 
                  <button 
                  className="text-red-600 hover:text-red-800"
-                 onClick={() => handleDeleteEdit(category._id)}>
+                 onClick={() => handleDeleteEdit(user._id)}>
                 Delete
                 </button>
-
-
                </li>
              ))}
            </ul>
+           
          </div>
        </div>
       </div>

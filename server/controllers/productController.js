@@ -46,4 +46,34 @@ try{
 }
 }
 
-export { getProducts, addProducts };
+const  updateProduct = async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const { name, description, price, stock, categoryId, supplierId } = req.body;
+
+        const updatedProduct = await ProductModel.findByIdAndUpdate(id, {
+            name,
+            description,
+            price,
+            stock,
+            categoryId,
+            supplierId
+        }, { new: true });
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        return res.status(200).json({ success: true, message: "Product updated successfully", product: updatedProduct });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+const deleteProduct = (req, res) => {
+    
+};
+
+export { getProducts, addProducts, updateProduct, deleteProduct};

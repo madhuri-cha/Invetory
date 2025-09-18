@@ -7,6 +7,8 @@ import dotenv from 'dotenv';
 import categoryRoutes from './routes/categoryRoutes.js';  
 import supplierRoutes from './routes/supplierRoutes.js'
 import productRoutes from './routes/productRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
 import bcrypt from 'bcrypt'
 
 
@@ -20,6 +22,8 @@ app.use('/api/auth', authRoutes); //router for handling login and registration
 app.use('/api/category', categoryRoutes);
 app.use('/api/supplier', supplierRoutes);
 app.use('/api/product', productRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/order', orderRoutes)
 
 const PORT=process.env.PORT || 5000; 
 
