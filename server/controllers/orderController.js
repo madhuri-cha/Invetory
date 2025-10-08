@@ -48,7 +48,12 @@ const getOrders = async (req, res) =>
  try
  {
  const userId = req.user._id;
- const orders = await OrderModel.find({customer: userId}).populate(
+ let query = {};
+ if(req.user.role === 'customer')
+ {
+   query= {customer: userId};
+ }
+ const orders = await OrderModel.find(query).populate(
   {
   path:'product', 
   populate : 
@@ -58,6 +63,7 @@ const getOrders = async (req, res) =>
  },
   select: 'name price categoryId'
   }).populate('customer', 'name email')
+  
  return res.status(200).json({success: true, orders})
  }
  catch (error)

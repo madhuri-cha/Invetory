@@ -59,7 +59,11 @@ useEffect(() =>
 
                   <td className="border border-gray-300 px-4 py-2">{order.quantity}</td>
                   <td className="border border-gray-300 px-4 py-2">{order.totalPrice}</td>
-                  <td className="border border-gray-300 px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+               <td className="border px-4 py-2">
+  {order.createdAt ? new Date(order.createdAt).toLocaleDateString() 
+                   : new Date(order.orderDate).toLocaleDateString()}
+</td>
+
                 </tr>
               ))}
             </tbody>
