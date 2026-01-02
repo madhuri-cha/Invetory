@@ -5,9 +5,8 @@ import CategoryModel from "../models/Category.js";
 const getProducts = async (req, res) => {
 
     try{
-        
         const suppliers = await SupplierModel.find();
-        const products = await ProductModel.find().populate('categoryId').populate('supplierId');
+        const products = await ProductModel.find({ isDeleted: false }).populate('categoryId').populate('supplierId');
         const categories = await CategoryModel.find();
         return res.status(200).json({ success: true, products, suppliers, categories });
     }
@@ -46,7 +45,7 @@ try{
 }
 }
 
-const  updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
 
     try {
         const { id } = req.params;
@@ -72,8 +71,20 @@ const  updateProduct = async (req, res) => {
     }
 };
 
-const deleteProduct = (req, res) => {
-    
+const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProduct = await ProductModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+
+        if (!deletedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        return res.status(200).json({ success: true, message: "Product deleted successfully", product: deletedProduct });
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
 };
 
 export { getProducts, addProducts, updateProduct, deleteProduct};

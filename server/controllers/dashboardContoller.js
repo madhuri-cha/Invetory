@@ -5,16 +5,19 @@ import CategoryModel from "../models/Category.js";
 const getData = async (req,res) =>
 {
  try {
- const totalProducts = await ProductModel.countDocuments();
+ const totalProducts = await ProductModel.countDocuments({
+    isDeleted: false
+ });
 
  const stockResult= await ProductModel.aggregate([
 
+     { $match: { isDeleted: false } },
     {
         $group: {_id : null, totalStock: {$sum : "$stock"}}
     }
  ])
 
- const totalStock = stockResult[0]?.totalStock || 0;
+ const totalStock = stockResult[0]?.totalStock;
 
  const startOfDay = new Date();
  startOfDay.setHours(0, 0, 0, 0);
@@ -41,12 +44,16 @@ const getData = async (req,res) =>
 
  const revenue = revenueResult[0]?.totolRevenue || 0;
 
- const outOfStock = await ProductModel.find({stock : 0})
+ const outOfStock = await ProductModel.find({stock : 0,  isDeleted: false})
  .select("name stock")
  .populate('categoryId', 'categoryName')
 
  //higest sale
  const highestSaleResult = await OrderModel.aggregate([
+    
+    // highestSaleProduct = ACTIVE products only
+    //{ $match: { "product.isDeleted": false } },
+
     {
         $group: {_id: "$product", totalQuantity: {$sum: "$quantity"}}
     },
@@ -91,7 +98,7 @@ const getData = async (req,res) =>
  const highestSaleProduct = highestSaleResult[0] || {message: "No sales yet"};
 
  //low stock
- const lowStock = await ProductModel.find({stock : {$gt: 0, $lt: 5}})
+ const lowStock = await ProductModel.find({stock : {$gt: 0, $lt: 5}, isDeleted: false})
     .select("name stock")
     .populate('categoryId', 'categoryName')
     

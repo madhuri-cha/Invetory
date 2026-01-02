@@ -349,7 +349,26 @@ const closeModel = () =>
     })
   };
 
-  const handleDelete = () => {};
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/product/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('pos-token')}`,
+        },
+      });
+      if (response.data.success) {
+        alert('Product deleted successfully');
+        fetchProducts();
+      } else {
+        alert('Failed to delete product. Please try again');
+      }
+    } catch (error) {
+      alert('Error deleting product. Please try again.');
+    }
+  };
 
   return (
     <div className="p-6">

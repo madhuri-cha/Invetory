@@ -112,7 +112,7 @@ const [loading, setLoading]=useState(false);
             (
               <div>
                 <p><strong>Name:</strong> {dashboardData.highestSaleProduct.name}</p>
-                <p><strong>Category:</strong> {dashboardData.highestSaleProduct.category}</p>
+                <p><strong>Category:</strong> {dashboardData.highestSaleProduct.categoryName}</p>
                 <p><strong>Total Units Sold:</strong> ${dashboardData.highestSaleProduct.totalQuantity}</p>
               </div>
             ) : (
