@@ -32,8 +32,15 @@ app.get("/", (req, res) => {
 //   ],
 //   credentials: true
 // }));
+// app.use(cors({
+//   origin: true,
+//   credentials: true
+// }));
+
 app.use(cors({
-  origin: true,
+  origin: [
+    "https://just-renewal-production.up.railway.app"
+  ],
   credentials: true
 }));
 
