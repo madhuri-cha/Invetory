@@ -19,7 +19,7 @@ const CustomerProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/product', {
+      const response = await axios.get('/api/product', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('pos-token')}`,
         },
