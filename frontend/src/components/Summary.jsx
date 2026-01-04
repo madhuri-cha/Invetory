@@ -18,7 +18,7 @@ const [loading, setLoading]=useState(false);
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/api/dashboard",
+      const response = await axios.get("/api/dashboard",
         { headers:
         {
           Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
