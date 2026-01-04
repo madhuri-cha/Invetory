@@ -301,7 +301,7 @@ const Suppliers = () => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/supplier", {
+      const response = await axios.get("/api/supplier", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('pos-token')}`
         }
