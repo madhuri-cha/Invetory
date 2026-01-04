@@ -26,12 +26,17 @@ app.get("/", (req, res) => {
 //app.use(cors());
 //import cors from "cors";
 
+// app.use(cors({
+//   origin: [
+//     "https://just-renewal-production.up.railway.app"
+//   ],
+//   credentials: true
+// }));
 app.use(cors({
-  origin: [
-    "https://just-renewal-production.up.railway.app"
-  ],
+  origin: true,
   credentials: true
 }));
+
 
 app.use(express.json())
 app.use('/api/auth', authRoutes); //router for handling login and registration
