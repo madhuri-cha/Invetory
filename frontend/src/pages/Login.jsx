@@ -211,6 +211,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
 import axios from "axios";
+const API = "https://inventory-production-a60e.up.railway.app";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -227,10 +229,11 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await axios.post("/api/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(`${API}/api/auth/login`, {
+  email,
+  password,
+});
+
 
       if (response.data.success)
          {
