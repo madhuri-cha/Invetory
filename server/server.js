@@ -37,23 +37,23 @@ app.get("/", (req, res) => {
 //   credentials: true
 // }));
 
-// app.use(cors({
-//   origin: [
-//     "https://just-renewal-production.up.railway.app"
-//   ],
-//   credentials: true
-// }));
-
 app.use(cors({
   origin: [
     "https://just-renewal-production.up.railway.app"
   ],
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }));
 
-app.options("*", cors());
+// app.use(cors({
+//   origin: [
+//     "https://just-renewal-production.up.railway.app"
+//   ],
+//   methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+//   allowedHeaders: ["Content-Type","Authorization"],
+//   credentials: true
+// }));
+
+// app.options("*", cors());
 
 
 app.use(express.json())
