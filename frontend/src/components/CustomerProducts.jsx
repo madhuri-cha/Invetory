@@ -72,7 +72,7 @@ const handleSubmit = async (e) =>
   e.preventDefault();
   try 
   {
-    const response = await axios.post('http://localhost:5000/api/order/add',orderData, {
+    const response = await axios.post('/api/order/add',orderData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('pos-token')}`,
         },
