@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState} from "react";
+import { API } from "../api";
 
 const Categories = () => {
 
@@ -14,7 +15,7 @@ const Categories = () => {
        setLoading(true);
        try{
 
-        const response = await axios.get("/api/category", {
+        const response = await API.get("/api/category", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('pos-token')}`
           }
