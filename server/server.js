@@ -19,6 +19,10 @@ dotenv.config();
 
 const app = express();
 //middleware
+app.get("/", (req, res) => {
+  res.status(200).send("Inventory Backend API is running 🚀");
+});
+
 app.use(cors());
 app.use(express.json())
 app.use('/api/auth', authRoutes); //router for handling login and registration
