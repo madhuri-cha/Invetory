@@ -11,7 +11,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    host: true,
+    port: 8080
+  },
   preview: {
-    allowedHosts: ["just-renewal-production.up.railway.app"]
+    allowedHosts: 'all'
   }
 });
