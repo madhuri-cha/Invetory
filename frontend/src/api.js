@@ -1,7 +1,14 @@
+// import axios from "axios";
+
+// const api = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+// });
+
+// export default api;
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+export const API = axios.create({
+  baseURL: "https://inventory-production-a60e.up.railway.app",
+  withCredentials: true
 });
 
-export default api;
