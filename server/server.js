@@ -23,7 +23,16 @@ app.get("/", (req, res) => {
   res.status(200).send("Inventory Backend API is running 🚀");
 });
 
-app.use(cors());
+//app.use(cors());
+//import cors from "cors";
+
+app.use(cors({
+  origin: [
+    "https://just-renewal-production.up.railway.app"
+  ],
+  credentials: true
+}));
+
 app.use(express.json())
 app.use('/api/auth', authRoutes); //router for handling login and registration
 app.use('/api/category', categoryRoutes);
