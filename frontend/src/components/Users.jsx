@@ -21,7 +21,7 @@ const Users = () => {
        setLoading(true);
        try{
 
-        const response = await axios.get("http://localhost:5000/api/users", {
+        const response = await axios.get("/api/users", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('pos-token')}`
           }
