@@ -37,12 +37,22 @@ app.get("/", (req, res) => {
 //   credentials: true
 // }));
 
+const allowedOrigins = [
+  "https://just-renewal-production.up.railway.app",
+  "http://localhost:5173"
+];
+
 app.use(cors({
-  origin: [
-    "https://just-renewal-production.up.railway.app"
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
+
 
 // app.use(cors({
 //   origin: [
