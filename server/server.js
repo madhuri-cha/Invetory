@@ -37,21 +37,18 @@ app.get("/", (req, res) => {
 //   credentials: true
 // }));
 
-const allowedOrigins = [
-  "https://just-renewal-production.up.railway.app",
-  "http://localhost:5173"
-];
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://just-renewal-production.up.railway.app");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 
 // app.use(cors({
